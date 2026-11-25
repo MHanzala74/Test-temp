@@ -1,4 +1,5 @@
 import "./globals.css";
+import { TempsAnalyticsProvider } from "@temps-sdk/react-analytics";
 
 export const metadata = {
   title: "Temps Next.js App",
@@ -8,7 +9,11 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <TempsAnalyticsProvider basePath="/api/_temps">
+          {children}
+        </TempsAnalyticsProvider>
+      </body>
     </html>
   );
 }

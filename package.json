@@ -8,6 +8,7 @@
     "start": "next start -H 0.0.0.0 -p ${PORT:-3000}"
   },
   "dependencies": {
+    "@temps-sdk/react-analytics": "^0.0.9",
     "next": "^15.0.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
