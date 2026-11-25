@@ -1,3 +1,4 @@
+
 import "./globals.css";
 import { TempsAnalyticsProvider } from "@temps-sdk/react-analytics";
 
@@ -10,7 +11,14 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body>
-        <TempsAnalyticsProvider basePath="/api/_temps">
+        <TempsAnalyticsProvider
+          basePath="/api/_temps"
+          enableSessionRecording={true}
+          sessionRecordingConfig={{
+            sessionSampleRate: 1.0,
+            maskAllInputs: true,
+          }}
+        >
           {children}
         </TempsAnalyticsProvider>
       </body>
