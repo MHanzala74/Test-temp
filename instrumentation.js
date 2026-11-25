@@ -1,4 +1,5 @@
 
+import dns from "node:dns/promises";
 import {
   diag,
   DiagConsoleLogger,
@@ -7,43 +8,45 @@ import {
 
 import { registerOTel } from "@vercel/otel";
 
-function inspectEndpoint(value) {
+function safeProxy(value) {
   if (!value) return "NOT SET";
 
   try {
     const url = new URL(value);
-
     return {
-      protocol: url.protocol,
       hostname: url.hostname,
       port: url.port || "(default)",
-      pathname: url.pathname,
     };
   } catch {
-    return "INVALID URL";
+    return "CONFIGURED (invalid URL)";
   }
 }
 
-export function register() {
+export async function register() {
   diag.setLogger(
     new DiagConsoleLogger(),
     DiagLogLevel.DEBUG
   );
 
-  console.log("[OTEL] Runtime endpoint diagnostics", {
-    endpoint: inspectEndpoint(
-      process.env.OTEL_EXPORTER_OTLP_ENDPOINT
-    ),
-    tracesEndpoint: inspectEndpoint(
-      process.env.OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
-    ),
-    protocol: process.env.OTEL_EXPORTER_OTLP_PROTOCOL,
-    serviceName: process.env.OTEL_SERVICE_NAME,
-  });
+  registerOTel({ serviceName: "Test-temp" });
 
-  registerOTel({
-    serviceName: "Test-temp",
-  });
+  try {
+    const result = await dns.lookup(
+      "console.127-0-0-1.sslip.io",
+      { all: true }
+    );
 
-  console.log("[OTEL] Registration completed");
+    console.log("[OTEL DNS CHECK]", result);
+  } catch (error) {
+    console.error("[OTEL DNS ERROR]", error.message);
+  }
+
+  console.log("[OTEL PROXY CHECK]", {
+    HTTP_PROXY: safeProxy(process.env.HTTP_PROXY),
+    HTTPS_PROXY: safeProxy(process.env.HTTPS_PROXY),
+    ALL_PROXY: safeProxy(process.env.ALL_PROXY),
+    http_proxy: safeProxy(process.env.http_proxy),
+    https_proxy: safeProxy(process.env.https_proxy),
+    all_proxy: safeProxy(process.env.all_proxy),
+  });
 }
