@@ -8,7 +8,9 @@
     "start": "next start -H 0.0.0.0 -p ${PORT:-3000}"
   },
   "dependencies": {
+    "@opentelemetry/api": "^1.9.1",
     "@temps-sdk/react-analytics": "^0.0.9",
+    "@vercel/otel": "^2.3.0",
     "next": "^15.0.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
